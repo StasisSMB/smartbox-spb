@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сервисный центр SmartBox — Ремонт телефонов, ноутбуков, MacBook на Звёздной</title>
+    <style>
+        /* ==========================================================================
+           --- ГЛОБАЛЬНЫЕ СТИЛИ ДЛЯ ВСЕГО САЙТА ---
+           ========================================================================== */
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0; 
+            padding: 0; 
+            background-color: #f4f7fb; 
+            color: #333;
+        }
+
+        .container {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ==========================================================================
+           --- ВЕРХНЯЯ БЕЛАЯ ШАПКА САЙТА (HEADER) ---
+           ========================================================================== */
+        .top-header {
+            background: #ffffff;
+            border-bottom: 1px solid #eaeaea;
+            padding: 15px 0;
+            position: relative;
+            z-index: 100;
+        }
+        
+        .header-grid {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo-block {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-img {
+            height: 115px;
+            width: auto;
+            display: block;
+        }
+        .logo-text {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .header-info {
+            font-size: 13px;
+            color: #444;
+            line-height: 1.5;
+        }
+        .map-link {
+            color: #0ea5a4;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .map-link:hover {
+            text-decoration: underline;
+        }
+
+        .header-contacts {
+            text-align: right;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .phone-link {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0b8584;
+            text-decoration: none;
+        }
+        
+        .btn-green {
+            background: #0ea5a4;
+            color: white;
+            padding: 10px 22px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 13px;
+            transition: 0.2s ease;
+            display: inline-block;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-green:hover {
+            background: #0b8584;
+        }
+
+        /* --- БУРГЕР-МЕНЮ (Шторка) --- */
+        .burger-menu {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            z-index: 101;
+        }
+        .burger-menu span {
+            display: block;
+            width: 28px;
+            height: 3px;
+            background-color: #0a192f;
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+
+        /* Шторка меню */
+        .mobile-menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            padding-top: 80px;
+            z-index: 100;
+            overflow-y: auto;
+            box-shadow: -4px 0 20px rgba(0,0,0,0.1);
+        }
+        .mobile-menu-overlay.active {
+            display: block;
+        }
+        .mobile-menu-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+        .mobile-menu-nav a {
+            display: block;
+            padding: 20px 25px;
+            color: #111827;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 600;
+            border-bottom: 1px solid #f3f4f6;
+            transition: background 0.2s;
+        }
+        .mobile-menu-nav a:hover {
+            background: #f9fafb;
+        }
+        .mobile-menu-nav a.close-btn {
+            display: flex;
+            justify-content: flex-end;
+            padding: 20px 25px;
+            font-size: 24px;
+            color: #6b7280;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        /* Выпадающее меню в шапке (для ПК и планшетов) */
+        .nav-menu {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .nav-menu a {
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-menu a:hover {
+            color: #0ea5a4;
+        }
+
+        /* Активное состояние выпадающего меню */
+        .nav-menu.active {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 15px 20px;
+            gap: 10px;
+            border-bottom: 1px solid #eaeaea;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            z-index: 99;
+        }
+
+        @media (max-width: 991px) {
+            .burger-menu { display: flex; }
+            .header-contacts { display: none; }
+            .nav-menu { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .header-grid { 
+                display: flex; 
+                justify-content: space-between; 
+                align-items: center; 
+                width: 100%; 
+            }
+            .header-info { 
+                display: none; /* Скрываем адрес из шапки на узких экранах */
+            }
+        }
+
+        /* ==========================================================================
+           --- ГОЛУБОЕ МЕНЮ БРЕНДОВ ---
+           ========================================================================== */
+        .brand-menu-bar {
+            background: #0f2a47;
+        }
+        .brand-menu {
+            display: flex;
+            justify-content: flex-start;
+            gap: 22px;
+            padding: 12px 0;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        .brand-menu::-webkit-scrollbar {
+            display: none;
+        }
+        .brand-menu a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.15s;
+        }
+        .brand-menu a:hover {
+            opacity: 0.85;
+            text-decoration: underline;
+        }
+
+        /* ==========================================================================
+           --- ГЛАВНЫЙ БАННЕР С ФОРМОЙ СВЯЗИ ---
+           ========================================================================== */
+        .hero-section {
+            background: linear-gradient(rgba(10, 25, 47, 0.88), rgba(10, 25, 47, 0.88)), 
+                        url('https://unsplash.com') center/cover no-repeat;
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 36px;
+            margin: 0 0 15px 0;
+            font-weight: 700;
+        }
+        .hero-section p {
+            font-size: 16px;
+            color: #d1d5db;
+            margin: 0 auto 35px auto;
+            max-width: 700px;
+            line-height: 1.6;
+        }
+        .hero-diagnostic {
+            display: inline-block;
+            background-color: #fee2e2;
+            color: #ef4444;
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+
+        .fast-form-container {
+            max-width: 650px;
+            margin: 0 auto;
+        }
+        .fast-form {
+            display: flex;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 35px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .fast-form input {
+            flex: 1;
+            background: #ffffff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+        }
+        .fast-form button {
+            background: #0ea5a4;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .fast-form button:hover {
+            background: #0b8584;
+        }
+        .form-notice {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-top: 10px;
+        }
+
+        /* ==========================================================================
+           --- БЛОК ПРЕИМУЩЕСТВ (УТП) ---
+           ========================================================================== */
+        .advantages-section {
+            padding: 50px 0;
+            background: #ffffff;
+        }
+        .advantages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+        .adv-card {
+            background: #eef4f9;
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid #edf2f7;
+            text-align: center;
+        }
+        .adv-card .icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+        .adv-card h4 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+            color: #111827;
+        }
+        .adv-card p {
+            margin: 0;
+            font-size: 13px;
+            color: #4b5563;
+            line-height: 1.5;
+        }
+
+        /* ==========================================================================
+           --- БЛОК "КАК МЫ РАБОТАЕМ" ---
+           ========================================================================== */
+        .steps-section {
+            padding: 50px 0;
+            background: #ffffff;
+            border-top: 1px solid #eaeaea;
+            border-bottom: 1px solid #eaeaea;
+            text-align: center;
+        }
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .step-card {
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+        .step-num {
+            width: 40px;
+            height: 40px;
+            background: #0ea5a4;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        /* ==========================================================================
+           --- РАБОЧАЯ ЗОНА: ФОРМА + КАРТА ---
+           ========================================================================== */
+        .workflow-section {
+            padding: 60px 0;
+        }
+        .workflow-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+        @media (max-width: 768px) {
+            .workflow-grid { grid-template-columns: 1fr; }
+            .header-contacts { text-align: left; }
+        }
+
+        .main-form-box {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid #e5e7eb;
+        }
+        .main-form-box h3 { margin: 0 0 10px 0; font-size: 22px; }
+        .main-form-box p { margin: 0 0 20px 0; font-size: 14px; color: #6b7280; }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #1e3a5f;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        .btn-tg {
+            display: block;
+            text-align: center;
+            background: #2563eb;
+            color: white;
+            padding: 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        .btn-tg:hover { background: #1e40af; }
+
+        .map-box {
+            align-self: start;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .ya-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        .ya-head strong { color: #111827; font-size: 16px; }
+        .ya-head span { color: #9ca3af; font-size: 13px; }
+        .ya-rating {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+        .ya-score {
+            font-size: 48px;
+            font-weight: 800;
+            color: #000;
+            line-height: 1;
+        }
+        .ya-stars { color: #fc0; font-size: 20px; letter-spacing: 1px; line-height: 1; }
+        .ya-stars.small { font-size: 13px; }
+        .ya-cta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            padding: 10px 10px 10px 15px;
+            font-size: 14px;
+            color: #1e3a5f;
+        }
+        .ya-btn {
+            background: #2563eb;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            padding: 9px 16px;
+            border-radius: 6px;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+        .ya-btn:hover { background: #1d4ed8; }
+        .ya-review {
+            border-top: 1px solid #e5e7eb;
+            margin-top: 18px;
+            padding-top: 18px;
+        }
+        .ya-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        .ya-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #0ea5a4;
+            color: #fff;
+            font-weight: 700;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .ya-name { font-weight: 600; color: #111827; font-size: 14px; }
+        .ya-date { color: #9ca3af; font-size: 12px; margin-left: 6px; }
+        .ya-text { font-size: 13px; color: #1e3a5f; line-height: 1.55; }
+        .ya-more {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            color: #1e3a5f;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .ya-more:hover { background: #eef4f9; }
+
+        /* ==========================================================================
+           --- БЛОК ГАРАНТИИ (НОВЫЙ ДИЗАЙН) ---
+           ========================================================================== */
+        .warranty-section {
+            padding: 60px 0;
+            background: #ffffff;
+            border-top: 1px solid #eaeaea;
+            text-align: center;
+        }
+        .warranty-card {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+        .warranty-card h3 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            font-size: 22px;
+            font-weight: 700;
+        }
+        .warranty-card p {
+            margin: 0;
+            font-size: 15px;
+            color: #334155;
+            line-height: 1.7;
+        }
+
+        /* ==========================================================================
+           --- ПОДВАЛ САЙТА (FOOTER) ---
+           ========================================================================== */
+        footer {
+            background: #111111;
+            color: #9ca3af;
+            padding: 40px 0 20px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+            border-bottom: 1px solid #222222;
+            padding-bottom: 30px;
+            margin-bottom: 25px;
+        }
+        .footer-col h5 {
+            color: #ffffff;
+            font-size: 16px;
+            margin: 0 0 20px 0;
+            font-weight: 600;
+        }
+        .footer-col p, .footer-col li {
+            margin: 8px 0;
+            list-style: none;
+            color: #cccccc;
+        }
+        .footer-col a {
+            color: #cccccc;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-col a:hover {
+            color: #ffffff;
+        }
+        .copyright-bar {
+            text-align: center;
+            color: #666666;
+            font-size: 11px;
+            padding-top: 20px;
+        }
+        .map-container {
+            width: 100%;
+            height: 300px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 15px;
+            border: 1px solid #333333;
+        }
+
+        /* 1. Скрытие водяного знака Netlify */
+        #netlify-nitro-badge, .netlify-badge, [id*="netlify-nitro"], div[class*="netlify"] {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ВЕРХНЯЯ БЕЛАЯ ШАПКА -->
+    <header class="top-header">
+        <div class="container header-grid">
+            <div class="logo-block">
+                <img alt="SmartBox" class="logo-img" id="01a16f9c-292f-7778-a969-f38a58166493">
+                <div class="logo-text">
+                    <strong>Сервисный центр</strong><br>
+                    Ремонт цифровой техники
+                </div>
+            </div>
+
+            <!-- Выпадающее меню для ПК -->
+            <nav>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="#about">О нас</a></li>
+                    <li><a href="#steps">Как работаем</a></li>
+                    <li><a href="#prices">Цены</a></li>
+                    <li><a href="#warranty">Гарантия</a></li>
+                    <li><a href="#contacts">Контакты</a></li>
+                </ul>
+            </nav>
+
+            <div class="header-contacts">
+                <div>
+                    <a href="tel:+79657665330" class="phone-link">📞 +7 (965) 766-53-30</a><br>
+                    <span style="font-size:11px; color:#666;">Наш телеграм канал: <a href="https://t.me/SmartBox_SPB" target="_blank" rel="noopener" class="map-link">@SmartBox_SPB</a></span><br>
+                    <span style="font-size:11px; color:#666;">Написать напрямую: <a href="https://t.me/SMK_manage" target="_blank" rel="noopener" class="map-link">@SMK_manage</a></span>
+                </div>
+                <a href="#order-form" class="btn-green">Оставить заявку</a>
+            </div>
+
+            <!-- 7. Кнопка бургер-меню -->
+            <button class="burger-menu" id="burgerBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ШТОРКА МОБИЛЬНОГО МЕНЮ -->
+    <div class="mobile-menu-overlay" id="mobileMenu">
+        <nav class="mobile-menu-nav">
+            <a href="javascript:void(0)" class="close-btn" onclick="toggleMenu()">&times;</a>
+            <a href="#order-form" onclick="toggleMenu()">Ремонт iPhone</a>
+            <a href="#order-form" onclick="toggleMenu()">Ремонт Samsung</a>
+            <a href="#order-form" onclick="toggleMenu()">Ремонт MacBook / Ноутбуков</a>
+            <a href="#order-form" onclick="toggleMenu()">Ремонт Планшетов</a>
+            <a href="#about" onclick="toggleMenu()">О нас</a>
+            <a href="#warranty" onclick="toggleMenu()">Гарантия</a>
+            <a href="#contacts" onclick="toggleMenu()">Контакты</a>
+        </nav>
+    </div>
+
+    <!-- ГОЛУБОЕ МЕНЮ БРЕНДОВ -->
+    <nav class="brand-menu-bar">
+        <div class="container brand-menu">
+            <a href="#order-form" data-brand="apple">Apple (iPhone)</a>
+            <a href="#order-form" data-brand="samsung">Samsung</a>
+            <a href="#order-form" data-brand="xiaomi">Xiaomi (Poco/Redmi)</a>
+            <a href="#order-form" data-brand="honor">Honor</a>
+            <a href="#order-form" data-brand="other_brand">Infinix</a>
+            <a href="#order-form" data-brand="other_brand">Tecno</a>
+            <a href="#order-form" data-brand="honor">Huawei</a>
+            <a href="#order-form" data-brand="other_brand">Vivo</a>
+            <a href="#order-form" data-brand="notebook">💻 Ноутбуки / MacBook</a>
+            <a href="#order-form" data-brand="tablet">📱 Планшеты</a>
+        </div>
+    </nav>
+
+    <!-- ГЛАВНЫЙ БАННЕР -->
+    <section class="hero-section" id="about">
+        <div class="container">
+            <h1>Предоставляем гарантию на выполненные работы</h1>
+            <div class="hero-diagnostic">🔥 Бесплатная диагностика устройств даже при отказе от ремонта!</div>
+            <p>
+                Ремонтируем технику Apple, Samsung, Xiaomi, Honor и других брендов в день обращения в 90% случаев. <br>
+                Официальная гарантия 1 месяц. Некогда ехать? Наш курьер заберет и привезет обратно ваше устройство!
+            </p>
+
+            <div class="fast-form-container">
+                <form class="fast-form" data-netlify="true" name="fast-callback" method="POST">
+                    <input type="hidden" name="form-name" value="fast-callback">
+                    <input type="tel" name="user_phone" placeholder="Введите Ваш номер телефона *" required>
+                    <button type="submit">Быстрая консультация</button>
+                </form>
+                <div class="form-notice">Нажимая на кнопку, вы даете согласие на обработку персональных данных</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- БЛОК ПРЕИМУЩЕСТВ -->
+    <section class="advantages-section">
+        <div class="container">
+            <div class="advantages-grid">
+                <div class="adv-card">
+                    <span class="icon">⚡</span>
+                    <h4>Срочный ремонт</h4>
+                    <p>Ремонтируем неисправности прямо в день обращения в 90% всех возможных случаев.</p>
+                </div>
+                <div class="adv-card">
+                    <span class="icon">🚗</span>
+                    <h4>Собственная доставка</h4>
+                    <p>У нас работает курьер. Довезем и заберем технику из любой точки города, сохранив ваше время.</p>
+                </div>
+                <div class="adv-card">
+                    <span class="icon">🛡️</span>
+                    <h4>Гарантия 1 месяц</h4>
+                    <p>После проведения восстановительных работ мастер выдает гарантию на работу и детали.</p>
+                </div>
+                <div class="adv-card">
+                    <span class="icon">🛠️</span>
+                    <h4>Любая сложность</h4>
+                    <p>Профессионально восстанавливаем как смартфоны, так и сложные поломки в ноутбуках, MacBook и планшетах.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Блок «Как мы работаем» -->
+    <section class="steps-section">
+        <div class="container">
+            <h2>Как мы работаем</h2>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-num">1</div>
+                    <p>Оставляете заявку на сайте или звоните нам.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">2</div>
+                    <p>Приносите устройство в СЦ или передаете его передаете курьеру.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">3</div>
+                    <p>Мастер проводит диагностику и согласовывает стоимость.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">4</div>
+                    <p>Ремонтируем гаджет, вы проверяете работу и получаете гарантию.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- БЛОК С ФОРМОЙ И КАРТОЙ -->
+    <section class="workflow-section" id="order-form">
+        <div class="container workflow-grid">
+            <div class="main-form-box">
+                <h3>Узнайте точную стоимость ремонта</h3>
+                <p>Опишите неисправность, и мы свяжемся с вами в течение 10 минут с готовым решением.</p>
+                
+                <form data-netlify="true" name="detailed-order" method="POST">
+                    <input type="hidden" name="form-name" value="detailed-order">
+                    <div class="form-group">
+                        <label>Ваше имя</label>
+                        <input type="text" name="client_name" placeholder="Иван">
+                    </div>
+                    <div class="form-group">
+                        <label>Номер телефона *</label>
+                        <input type="tel" name="client_phone" placeholder="+7 (___) ___-__-__" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Устройство /  Бренд</label>
+                        <select name="device_brand">
+                            <option value="not_selected">— Выберите бренд —</option>
+                            <option value="apple">Apple (iPhone/iPad)</option>
+                            <option value="samsung">Samsung</option>
+                            <option value="xiaomi">Xiaomi / Poco / Redmi</option>
+                            <option value="honor">Honor / Huawei</option>
+                            <option value="other_brand">Другой бренд смартфона</option>
+                            <option value="notebook">Ноутбук / MacBook</option>
+                            <option value="tablet">Планшет</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Модель устройства</label>
+                        <input type="text" name="device_model" placeholder="Например: iPhone 11, Redmi Note 10">
+                    </div>
+                    <div class="form-group">
+                        <label>Что случилось?</label>
+                        <input type="text" name="problem_description" placeholder="Например: разбился экран, не заряжается">
+                    </div>
+                    
+                    <button type="submit" class="btn-green" style="width: 100%; padding: 14px; font-size:15px; border-radius: 6px;">Отправить заявку мастеру</button>
+                </form>
+
+                <a href="https://t.me/SMK_manage" target="_blank" rel="noopener" class="btn-tg">💬 Написать напрямую в Telegram</a>
+            </div>
+
+            <div class="map-box">
+                <div class="ya-head">
+                    <strong>SmartBox</strong>
+                    <span>Яндекс Карты</span>
+                </div>
+
+                <div class="ya-rating">
+                    <div class="ya-score">4,9</div>
+                    <div>
+                        <div class="ya-stars">★★★★★</div>
+                        <div class="ya-count">51 отзыв • 66 оценок</div>
+                    </div>
+                </div>
+
+                <div class="ya-cta">
+                    <span>Поставьте нам оценку</span>
+                    <a href="https://yandex.ru/maps/org/smartbox/61765580629/reviews/?indoorLevel=1&amp;ll=30.351129%2C59.834013&amp;z=16.8" target="_blank" rel="noopener" class="ya-btn">Оставить отзыв</a>
+                </div>
+
+                <div class="ya-review">
+                    <div class="ya-author">
+                        <div class="ya-avatar">Л</div>
+                        <div>
+                            <div class="ya-name">Лёха Ненаход</div>
+                            <div><span class="ya-stars small">★★★★★</span><span class="ya-date">27 апреля 2025</span></div>
+                        </div>
+                    </div>
+                    <p class="ya-text">Прихожу на точку уже не в первый раз, персонал всегда вежлив, акции подкупают, а цена/качество просто поражают, всегда ухожу довольный. В последний раз отдавал телефон на чистку...</p>
+                </div>
+
+                <a href="https://yandex.ru/maps/org/smartbox/61765580629/reviews/?indoorLevel=1&amp;ll=30.351129%2C59.834013&amp;z=16.8" target="_blank" rel="noopener" class="ya-more">Больше отзывов на Яндекс Картах</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Блок «Гарантия» (НОВЫЙ ДИЗАЙН) -->
+    <section class="warranty-section" id="warranty">
+        <div class="container">
+            <div class="warranty-card">
+                <h3>🛡️ Гарантия на работы от 1 до 6 месяцев</h3>
+                <p>После ремонта мастер выдает официальную гарантийную квитанцию. В случае неисправности отремонтированной детали вы можете обратиться в наш сервисный центр за бесплатным ремонтом. Обязательно сохраняйте квитанцию на весь срок гарантии.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ПОДВАЛ (4 колонки) -->
+    <footer id="contacts">
+        <div class="container footer-grid">
+            <!-- Колонка 1: РЕМОНТ -->
+            <div class="footer-col">
+                <h5>Ремонт техники</h5>
+                <ul>
+                    <li><a href="#order-form">Ремонт iPhone</a></li>
+                    <li><a href="#order-form">Ремонт Samsung</a></li>
+                    <li><a href="#order-form">Ремонт Xiaomi (Poco/Redmi)</a></li>
+                    <li><a href="#order-form">Ремонт Honor</a></li>
+                    <li><a href="#order-form">Ремонт Infinix</a></li>
+                    <li><a href="#order-form">Ремонт Tecno</a></li>
+                    <li><a href="#order-form">Ремонт Huawei</a></li>
+                    <li><a href="#order-form">Ремонт Vivo</a></li>
+                    <li><a href="#order-form">Ремонт Ноутбук</a></li>
+                    <li><a href="#order-form">Ремонт MacBook</a></li>
+                    <li><a href="#order-form">Ремонт Планшет</a></li>
+                </ul>
+            </div>
+
+            <!-- Колонка 2: ИНФОРМАЦИЯ -->
+            <div class="footer-col">
+                <h5>Информация</h5>
+                <ul>
+                    <li><a href="#about">О нас</a></li>
+                    <li><a href="#warranty">Гарантия</a></li>
+                    <li><a href="#contacts">Контакты</a></li>
+                    <li>наш телеграм канал: <a href="https://t.me/SmartBox_SPB" target="_blank" rel="noopener">@SmartBox_SPB</a></li>
+                </ul>
+            </div>
+
+            <!-- Колонка 3: КОНТАКТЫ СЦ -->
+            <div class="footer-col">
+                <h5>Контакты СЦ</h5>
+                <p>📍 г. Санкт-Петербург, Звёздная ул., 8А, стр. 1</p>
+                <p>📞 Тел: <a href="tel:+79657665330">+7 (965) 766-53-30</a></p>
+                <p>🕒 Режим: Ежедневно с 10:00 до 21:30</p>
+                <p>💬 Telegram: <a href="https://t.me/SMK_manage" target="_blank" rel="noopener">@SMK_manage</a></p>
+                <p>📢 Наш Telegram-канал: <a href="https://t.me/SmartBox_SPB" target="_blank" rel="noopener">@SmartBox_SPB</a></p>
+            </div>
+
+            <!-- Колонка 4: ЮРИДИЧЕСКАЯ ИНФОРМАЦИЯ -->
+            <div class="footer-col">
+                <h5>Юридическая информация</h5>
+                <p>Организация: ИП Пярлайтис Стасис Стасевич</p>
+		<p>ИНН: 781603872420</p>
+		<p>ОГРНИП: 323784700340823</p>
+		<p><strong
