@@ -269,15 +269,6 @@
             max-width: 700px;
             line-height: 1.6;
         }
-        .hero-diagnostic {
-            display: inline-block;
-            background-color: #fee2e2;
-            color: #ef4444;
-            padding: 8px 16px;
-            border-radius: 20px;
-            margin-bottom: 20px;
-            font-size: 15px;
-        }
 
         .fast-form-container {
             max-width: 650px;
@@ -581,6 +572,59 @@
         }
 
         /* ==========================================================================
+           --- МОДАЛЬНОЕ ОКНО КОНТАКТОВ ---
+           ========================================================================== */
+        .modal-overlay {
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6); 
+            z-index: 2000; 
+            align-items: center; 
+            justify-content: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-content {
+            background: #ffffff; 
+            padding: 30px; 
+            border-radius: 16px; 
+            max-width: 500px; 
+            width: 90%;
+            position: relative; 
+            text-align: center; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .modal-content h2 { 
+            margin-bottom: 20px; 
+            color: #111827; 
+            font-size: 24px; 
+        }
+        .modal-close {
+            position: absolute; 
+            top: 15px; 
+            right: 20px; 
+            background: none; 
+            border: none;
+            font-size: 28px; 
+            cursor: pointer; 
+            color: #6b7280;
+        }
+        .modal-contacts-list p { 
+            margin-bottom: 15px; 
+            font-size: 16px; 
+            text-align: left; 
+            color: #374151; 
+        }
+        .modal-contacts-list a { 
+            color: #007bff; 
+            text-decoration: none; 
+            font-weight: bold; 
+        }
+
+        /* ==========================================================================
            --- ПОДВАЛ САЙТА (FOOTER) ---
            ========================================================================== */
         footer {
@@ -647,7 +691,7 @@
     <header class="top-header">
         <div class="container header-grid">
             <div class="logo-block">
-                <img alt="SmartBox" class="logo-img" id="01a16f9c-292f-7778-a969-f38a58166493">
+                <img alt="SmartBox" class="logo-img" id="01a16fd9-bf7d-72ba-9785-b294787bf6a4">
                 <div class="logo-text">
                     <strong>Сервисный центр</strong><br>
                     Ремонт цифровой техники
@@ -661,7 +705,7 @@
                     <li><a href="#steps">Как работаем</a></li>
                     <li><a href="#prices">Цены</a></li>
                     <li><a href="#warranty">Гарантия</a></li>
-                    <li><a href="#contacts">Контакты</a></li>
+                    <li><a href="#" id="footerContactsLink">Контакты</a></li>
                 </ul>
             </nav>
 
@@ -689,12 +733,11 @@
             <a href="javascript:void(0)" class="close-btn" onclick="toggleMenu()">&times;</a>
             <a href="#order-form" onclick="toggleMenu()">Ремонт iPhone</a>
             <a href="#order-form" onclick="toggleMenu()">Ремонт Samsung</a>
-            <a href="#order-form" onclick="toggleMenu()">Ремонт Ноутбуков</a>
-			<a href="#order-form" onclick="toggleMenu()">Ремонт MacBook</a>
+            <a href="#order-form" onclick="toggleMenu()">Ремонт MacBook / Ноутбуков</a>
             <a href="#order-form" onclick="toggleMenu()">Ремонт Планшетов</a>
             <a href="#about" onclick="toggleMenu()">О нас</a>
             <a href="#warranty" onclick="toggleMenu()">Гарантия</a>
-            <a href="#contacts" onclick="toggleMenu()">Контакты</a>
+            <a href="#" id="mobileContactsLink">Контакты</a>
         </nav>
     </div>
 
@@ -709,9 +752,8 @@
             <a href="#order-form" data-brand="other_brand">Tecno</a>
             <a href="#order-form" data-brand="honor">Huawei</a>
             <a href="#order-form" data-brand="other_brand">Vivo</a>
-            <a href="#order-form" data-brand="notebook">Ноутбуки</a>
-			<a href="#order-form" data-brand="notebook">MacBook</a>
-            <a href="#order-form" data-brand="tablet">Планшеты</a>
+            <a href="#order-form" data-brand="notebook">💻 Ноутбуки / MacBook</a>
+            <a href="#order-form" data-brand="tablet">📱 Планшеты</a>
         </div>
     </nav>
 
@@ -719,7 +761,6 @@
     <section class="hero-section" id="about">
         <div class="container">
             <h1>Предоставляем гарантию на выполненные работы</h1>
-            <div class="hero-diagnostic">🔥 Бесплатная диагностика устройств даже при отказе от ремонта!</div>
             <p>
                 Ремонтируем технику Apple, Samsung, Xiaomi, Honor и других брендов в день обращения в 90% случаев. <br>
                 Официальная гарантия 1 месяц. Некогда ехать? Наш курьер заберет и привезет обратно ваше устройство!
@@ -775,7 +816,7 @@
                 </div>
                 <div class="step-card">
                     <div class="step-num">2</div>
-                    <p>Приносите устройство в СЦ или передаете его передаете курьеру.</p>
+                    <p>Приносите устройство в СЦ или передаете его курьеру.</p>
                 </div>
                 <div class="step-card">
                     <div class="step-num">3</div>
@@ -812,7 +853,7 @@
                             <option value="not_selected">— Выберите бренд —</option>
                             <option value="apple">Apple (iPhone/iPad)</option>
                             <option value="samsung">Samsung</option>
-                            <option value="xiaomi">Xiaomi / Poco / Redmi</option>
+                            <option value="xiaomi">Xiaomi / Poco/Redmi</option>
                             <option value="honor">Honor / Huawei</option>
                             <option value="other_brand">Другой бренд смартфона</option>
                             <option value="notebook">Ноутбук / MacBook</option>
@@ -874,10 +915,25 @@
         <div class="container">
             <div class="warranty-card">
                 <h3>🛡️ Гарантия на работы от 1 до 6 месяцев</h3>
-                <p>После ремонта мастер выдает официальную гарантийную квитанцию. В случае неисправности отремонтированной детали вы можете обратиться в наш сервисный центр за бесплатным ремонтом. Обязательно сохраняйте квитанцию на весь срок гарантии.</p>
+                <p>После ремонта мастер выдает официальную гарантийную квитанцию. В случае неисправности отремонтированной детали вы можете обратиться в наш сервисный центр для бесплатного гарантийного ремонта. Обязательно сохраняйте квитанцию на весь срок гарантии.</p>
             </div>
         </div>
     </section>
+
+    <!-- МОДАЛЬНОЕ ОКНО КОНТАКТОВ -->
+    <div id="contactsModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModalBtn">&times;</button>
+            <h2>Контакты СЦ</h2>
+            <div class="modal-contacts-list">
+                <p>📍 <strong>Адрес:</strong> г. Санкт-Петербург, Звёздная ул., 8А, стр. 1</p>
+                <p>📞 <strong>Телефон:</strong> <a href="tel:+79657665330">+7 (965) 766-53-30</a></p>
+                <p>🕒 <strong>Режим работы:</strong> Ежедневно с 10:00 до 21:30</p>
+                <p>💬 <strong>Telegram менеджера:</strong> <a href="https://t.me/SMK_manage" target="_blank">@SMK_manage</a></p>
+                <p>📢 <strong>Наш Telegram-канал:</strong> <a href="https://t.me/SmartBox_SPB" target="_blank">@SmartBox_SPB</a></p>
+            </div>
+        </div>
+    </div>
 
     <!-- ПОДВАЛ (4 колонки) -->
     <footer id="contacts">
@@ -886,17 +942,10 @@
             <div class="footer-col">
                 <h5>Ремонт техники</h5>
                 <ul>
-                    <li><a href="#order-form">Ремонт iPhone</a></li>
-                    <li><a href="#order-form">Ремонт Samsung</a></li>
-                    <li><a href="#order-form">Ремонт Xiaomi (Poco/Redmi)</a></li>
-                    <li><a href="#order-form">Ремонт Honor</a></li>
-                    <li><a href="#order-form">Ремонт Infinix</a></li>
-                    <li><a href="#order-form">Ремонт Tecno</a></li>
-                    <li><a href="#order-form">Ремонт Huawei</a></li>
-                    <li><a href="#order-form">Ремонт Vivo</a></li>
-                    <li><a href="#order-form">Ремонт Ноутбук</a></li>
-                    <li><a href="#order-form">Ремонт MacBook</a></li>
-                    <li><a href="#order-form">Ремонт Планшет</a></li>
+                    <li><a href="#order-form">Ремонт iPhone / iPad</a></li>
+                    <li><a href="#order-form">Ремонт Samsung / Xiaomi</a></li>
+                    <li><a href="#order-form">Ремонт MacBook / Ноутбуков</a></li>
+                    <li><a href="#order-form">Ремонт Планшетов</a></li>
                 </ul>
             </div>
 
@@ -906,7 +955,7 @@
                 <ul>
                     <li><a href="#about">О нас</a></li>
                     <li><a href="#warranty">Гарантия</a></li>
-                    <li><a href="#contacts">Контакты</a></li>
+                    <li><a href="#" id="footerContactsLink2">Контакты</a></li>
                     <li>наш телеграм канал: <a href="https://t.me/SmartBox_SPB" target="_blank" rel="noopener">@SmartBox_SPB</a></li>
                 </ul>
             </div>
@@ -925,6 +974,122 @@
             <div class="footer-col">
                 <h5>Юридическая информация</h5>
                 <p>Организация: ИП Пярлайтис Стасис Стасевич</p>
-		<p>ИНН: 781603872420</p>
-		<p>ОГРНИП: 323784700340823</p>
-		<p><strong
+                <p>ИНН: 781603872420</p>
+                <p>ОГРНИП: 323784700340823</p>
+            </div>
+        </div>
+        <div class="container copyright-bar">
+            <p>© 2026 Сервисный центр SmartBox. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script>
+        /* --- БУРГЕР-МЕНЮ --- */
+        const burgerBtn = document.getElementById('burgerBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        if (burgerBtn && mobileMenu) {
+            burgerBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('active');
+            });
+        }
+
+        /* --- ВЫПАДАЮЩЕЕ МЕНЮ В ШАПКЕ --- */
+        const navMenu = document.getElementById('navMenu');
+        const navLinks = navMenu ? navMenu.querySelectorAll('a') : [];
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                // Если это ссылка "Контакты" — открываем модалку
+                if (link.id === 'footerContactsLink') {
+                    e.preventDefault();
+                    document.getElementById('contactsModal').classList.add('open');
+                } else {
+                    // Для остальных ссылок — закрываем меню, если оно открыто
+                    if (navMenu.classList.contains('active')) {
+                        navMenu.classList.remove('active');
+                    }
+                }
+            });
+        });
+
+        /* --- МОДАЛЬНОЕ ОКНО --- */
+        const contactsModal = document.getElementById('contactsModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const mobileContactsLink = document.getElementById('mobileContactsLink');
+        const footerContactsLink2 = document.getElementById('footerContactsLink2');
+
+        // Открытие модалки
+        function openModal() {
+            contactsModal.classList.add('open');
+        }
+
+        // Закрытие модалки
+        function closeModal() {
+            contactsModal.classList.remove('open');
+        }
+
+        if (closeModalBtn) {
+            closeModalBtn.addEventListener('click', closeModal);
+        }
+        if (contactsModal) {
+            contactsModal.addEventListener('click', (e) => {
+                if (e.target === contactsModal) {
+                    closeModal();
+                }
+            });
+        }
+
+        // Открытие модалки по клику на "Контакты" в футере и мобильном меню
+        if (mobileContactsLink) {
+            mobileContactsLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                openModal();
+            });
+        }
+        if (footerContactsLink2) {
+            footerContactsLink2.addEventListener('click', (e) => {
+                e.preventDefault();
+                openModal();
+            });
+        }
+
+        /* --- ИНТЕРАКТИВНЫЙ ПРАЙС-ЛИСТ --- */
+        const priceData = {
+            '16promax': [
+                { name: 'Замена дисплея (Оригинал)', price: 'от 41 800 ₽' },
+                { name: 'Замена аккумулятора', price: 'от 9 900 ₽' },
+                { name: 'Замена стекла камеры', price: 'от 6 000 ₽' }
+            ],
+            '16pro': [
+                { name: 'Замена дисплея (Оригинал)', price: 'от 37 900 ₽' },
+                { name: 'Замена аккумулятора', price: 'от 9 900 ₽' },
+                { name: 'Замена стекла камеры', price: 'от 6 000 ₽' }
+            ],
+            '16': [
+                { name: 'Замена дисплея', price: 'от 22 800 ₽' },
+                { name: 'Замена аккумулятора', price: 'от 8 900 ₽' },
+                { name: 'Ремонт разъема зарядки', price: 'от 3 500 ₽' }
+            ],
+            '15promax': [
+                { name: 'Замена дисплея', price: 'от 29 500 ₽' },
+                { name: 'Замена аккумулятора', price: 'от 6 900 ₽' },
+                { name: 'Замена заднего стекла', price: 'от 8 500 ₽' }
+            ]
+        };
+
+        function switchModel(modelKey, element) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            if(element) element.classList.add('active');
+            const table = document.getElementById('priceTable');
+            const data = priceData[modelKey];
+            let html = '';
+            data.forEach(item => {
+                html += `<div class="price-row"><span>${item.name}</span><span class="price-value">${item.price}</span></div>`;
+            });
+            table.innerHTML = html;
+        }
+        switchModel('16promax');
+    </script>
+</body>
+</html>
