@@ -393,6 +393,18 @@
             color: #9ca3af;
             margin-top: 10px;
         }
+        .form-status {
+            min-height: 20px;
+            margin: 10px 4px 0;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .form-status.success {
+            color: #15803d;
+        }
+        .form-status.error {
+            color: #b91c1c;
+        }
 
         .advantages-section {
             padding: 50px 0;
@@ -696,6 +708,87 @@
             line-height: 1.7;
         }
 
+        .buyout-section {
+            padding: 56px 0;
+            background: linear-gradient(135deg, #123b5d 0%, #102a43 100%);
+            color: #fff;
+            text-align: center;
+        }
+        .buyout-section h2 {
+            font-size: 30px;
+            margin: 0 0 12px;
+            font-weight: 700;
+        }
+        .buyout-sub {
+            font-size: 16px;
+            color: #d1d5db;
+            max-width: 680px;
+            margin: 0 auto 26px;
+            line-height: 1.6;
+        }
+        .buyout-items {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+        .buyout-tag {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 9px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .accessories-section {
+            padding: 56px 0;
+            background: #f5f8fc;
+        }
+        .accessories-section h2 {
+            text-align: center;
+            margin: 0 0 30px;
+            color: #111827;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .accessories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            max-width: 920px;
+            margin: 0 auto;
+        }
+        .acc-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 28px 22px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .acc-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+        }
+        .acc-card .icon {
+            font-size: 38px;
+            margin-bottom: 14px;
+            display: inline-block;
+        }
+        .acc-card h4 {
+            margin: 0 0 8px;
+            font-size: 18px;
+            color: #111827;
+        }
+        .acc-card p {
+            margin: 0;
+            font-size: 13px;
+            color: #4b5563;
+            line-height: 1.5;
+        }
+
         .modal-overlay {
             display: none; 
             position: fixed; 
@@ -804,6 +897,8 @@
                 <ul class="nav-menu" id="navMenu">
                     <li><a href="#about">О нас</a></li>
                     <li><a href="#steps">Как работаем</a></li>
+                    <li><a href="#buyout">Скупка</a></li>
+                    <li><a href="#accessories">Аксессуары</a></li>
                     <li><a href="#faq">Вопросы</a></li>
                     <li><a href="#warranty">Гарантия</a></li>
                     <li><a href="#" id="footerContactsLink">Контакты</a></li>
@@ -835,6 +930,8 @@
             <a href="#order-form">Ремонт ноутбуков</a>
             <a href="#order-form">Ремонт MacBook</a>
             <a href="#order-form">Ремонт планшетов</a>
+            <a href="#buyout">Скупка техники</a>
+            <a href="#accessories">Аксессуары</a>
             <a href="#about">О нас</a>
             <a href="#faq">Вопросы</a>
             <a href="#warranty">Гарантия</a>
@@ -860,10 +957,10 @@
 
     <section class="hero-section" id="about">
         <div class="container">
-            <h1>Предоставляем гарантию на выполненные работы</h1>
+            <h1>5 лет ремонтируем технику и даём гарантию на работы</h1>
             <p>
-                Ремонтируем технику Apple, Samsung, Xiaomi, Honor и других брендов в день обращения в 90% случаев. <br>
-                Официальная гарантия 1 месяц. Некогда ехать? Наш курьер заберет и привезет обратно ваше устройство!
+                За 5 лет работы отремонтировали тысячи устройств Apple, Samsung, Xiaomi, Honor и других брендов. <br>
+                Ремонт в день обращения в 90% случаев. Некогда ехать? Наш курьер заберёт и привезёт обратно ваше устройство!
             </p>
 
             <div class="fast-form-container">
@@ -899,6 +996,11 @@
                     <h4>Любая сложность</h4>
                     <p>Профессионально восстанавливаем как смартфоны, так и сложные поломки в ноутбуках, MacBook и планшетах.</p>
                 </div>
+                <div class="adv-card">
+                    <span class="icon">🏅</span>
+                    <h4>5 лет опыта</h4>
+                    <p>За 5 лет работы отремонтировали тысячи устройств — от смартфонов до ноутбуков и планшетов.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -923,6 +1025,26 @@
                     <div class="step-num">4</div>
                     <p>Ремонтируем гаджет, вы проверяете работу и получаете гарантию.</p>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="buyout-section" id="buyout">
+        <div class="container">
+            <h2>💸 Скупка техники</h2>
+            <p class="buyout-sub">Скупаем любую технику — ноутбуки, планшеты, телефоны. Бесплатная оценка за 10 минут, деньги в день обращения.</p>
+            <div class="buyout-items">
+                <span class="buyout-tag">📱 Телефоны</span>
+                <span class="buyout-tag">💻 Ноутбуки</span>
+                <span class="buyout-tag">📋 Планшеты</span>
+                <span class="buyout-tag">⌚ Часы и наушники</span>
+            </div>
+            <div class="fast-form-container">
+                <form class="fast-form" name="buyout-form" method="POST">
+                    <input type="tel" name="user_phone" placeholder="Введите телефон для оценки *" required>
+                    <button type="submit">Продать устройство</button>
+                </form>
+                <div class="form-notice">Нажимая на кнопку, вы даете согласие на обработку персональных данных</div>
             </div>
         </div>
     </section>
@@ -1011,6 +1133,32 @@
         </div>
     </section>
 
+    <section class="accessories-section" id="accessories">
+        <div class="container">
+            <h2>Аксессуары для вашей техники</h2>
+            <div class="accessories-grid">
+                <div class="acc-card">
+                    <span class="icon">🛡️</span>
+                    <h4>Защитные стёкла</h4>
+                    <p>Закалённые стёкла с олеофобным покрытием. Надёжная защита экрана от царапин и ударов, установка в подарок.</p>
+                </div>
+                <div class="acc-card">
+                    <span class="icon">📱</span>
+                    <h4>Чехлы</h4>
+                    <p>Большой выбор чехлов: силиконовые, кожаные, противоударные. На любые модели смартфонов и планшетов.</p>
+                </div>
+                <div class="acc-card">
+                    <span class="icon">✨</span>
+                    <h4>Гидрогелевые плёнки</h4>
+                    <p>Тонкие гидрогелевые плёнки: незаметны на экране, не желтеют, легко клеятся без пузырей.</p>
+                </div>
+            </div>
+            <div style="text-align:center; margin-top:28px;">
+                <a href="#order-form" class="btn-green">Узнать наличие и цену</a>
+            </div>
+        </div>
+    </section>
+
     <section class="faq-section" id="faq">
         <div class="container">
             <h2>Частые вопросы</h2>
@@ -1082,6 +1230,8 @@
                 <h5>Информация</h5>
                 <ul>
                     <li><a href="#about">О нас</a></li>
+                    <li><a href="#buyout">Скупка техники</a></li>
+                    <li><a href="#accessories">Аксессуары</a></li>
                     <li><a href="#warranty">Гарантия</a></li>
                     <li><a href="#" id="footerContactsLink2">Контакты</a></li>
                 </ul>
@@ -1109,6 +1259,53 @@
     </footer>
 
     <script>
+        const googleSheetsEndpoint = 'https://script.google.com/macros/s/AKfycbwYgPD10KJQfMxWaXHxxpUqqe80am7xcM6IbhUhpcmxRsVefpzzvDm7LQI-6e3WwIXBlQ/exec';
+        const forms = document.querySelectorAll('form[method="POST"]');
+
+        forms.forEach((form) => {
+            const status = document.createElement('div');
+            status.className = 'form-status';
+            status.setAttribute('role', 'status');
+            form.insertAdjacentElement('afterend', status);
+
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                const submitButton = form.querySelector('button[type="submit"]');
+                const formData = new FormData(form);
+                const formName = form.getAttribute('name');
+                const payload = {
+                    name: formData.get('client_name') || '',
+                    phone: formData.get('client_phone') || formData.get('user_phone') || '',
+                    deviceType: formData.get('device_brand') || (formName === 'buyout-form' ? 'Скупка техники' : 'Не указано'),
+                    deviceModel: formData.get('device_model') || '',
+                    issue: formData.get('problem_description') || (formName === 'buyout-form' ? 'Заявка на оценку устройства' : 'Быстрая консультация')
+                };
+
+                status.className = 'form-status';
+                status.textContent = 'Отправляем заявку…';
+                if (submitButton) submitButton.disabled = true;
+
+                try {
+                    await fetch(googleSheetsEndpoint, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    status.className = 'form-status success';
+                    status.textContent = 'Заявка отправлена. Мы скоро свяжемся с вами.';
+                    form.reset();
+                } catch (error) {
+                    status.className = 'form-status error';
+                    status.textContent = 'Не удалось отправить заявку. Позвоните нам или напишите в Telegram.';
+                } finally {
+                    if (submitButton) submitButton.disabled = false;
+                }
+            });
+        });
+
         const burgerBtn = document.getElementById('burgerBtn');
         const mobileMenu = document.getElementById('mobileMenu');
         const closeMobileMenu = document.getElementById('closeMobileMenu');
