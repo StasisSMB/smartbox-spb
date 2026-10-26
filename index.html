@@ -405,7 +405,13 @@
         .form-status.error {
             color: #b91c1c;
         }
-
+	.form-trap {
+    	position: absolute !important;
+    	left: -10000px !important;
+    	width: 1px !important;
+   	 height: 1px !important;
+    	overflow: hidden !important;
+	}
         .advantages-section {
             padding: 50px 0;
             background: #ffffff;
@@ -1258,147 +1264,221 @@
         </div>
     </footer>
 
-    <script>
-        const googleSheetsEndpoint = 'https://script.google.com/macros/s/AKfycbwYgPD10KJQfMxWaXHxxpUqqe80am7xcM6IbhUhpcmxRsVefpzzvDm7LQI-6e3WwIXBlQ/exec';
-        const forms = document.querySelectorAll('form[method="POST"]');
+<script>
+    const googleSheetsEndpoint = 'https://script.google.com/macros/s/AKfycbwYgPD10KJQfMxWaXHxxpUqqe80am7xcM6IbhUhpcmxRsVefpzzvDm7LQI-6e3WwIXBlQ/exec';
+    const forms = document.querySelectorAll('form[method="POST"]');
 
-        forms.forEach((form) => {
-            const status = document.createElement('div');
+    forms.forEach((form) => {
+        const trap = document.createElement('div');
+        trap.className = 'form-trap';
+        trap.setAttribute('aria-hidden', 'true');
+
+        const trapLabel = document.createElement('label');
+        trapLabel.textContent = 'Оставьте это поле пустым';
+
+        const trapInput = document.createElement('input');
+        trapInput.type = 'text';
+        trapInput.name = 'website';
+        trapInput.tabIndex = -1;
+        trapInput.autocomplete = 'off';
+
+        trapLabel.appendChild(trapInput);
+        trap.appendChild(trapLabel);
+        form.appendChild(trap);
+
+        const startedAt = document.createElement('input');
+        startedAt.type = 'hidden';
+        startedAt.name = 'formStartedAt';
+        startedAt.value = String(Date.now());
+        form.appendChild(startedAt);
+
+        const status = document.createElement('div');
+        status.className = 'form-status';
+        status.setAttribute('role', 'status');
+        form.insertAdjacentElement('afterend', status);
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const submitButton = form.querySelector('button[type="submit"]');
+            const formData = new FormData(form);
+            const formName = form.getAttribute('name');
+            const phone = String(
+                formData.get('client_phone') ||
+                formData.get('user_phone') ||
+                ''
+            ).trim();
+            const digits = phone.replace(/\D/g, '');
+
+            const payload = {
+                name: formData.get('client_name') || '',
+                phone,
+                deviceType: formData.get('device_brand') ||
+                    (formName === 'buyout-form'
+                        ? 'Скупка техники'
+                        : 'Не указано'),
+                deviceModel: formData.get('device_model') || '',
+                issue: formData.get('problem_description') ||
+                    (formName === 'buyout-form'
+                        ? 'Заявка на оценку устройства'
+                        : 'Быстрая консультация'),
+                website: formData.get('website') || '',
+                formStartedAt: formData.get('formStartedAt') || ''
+            };
+
             status.className = 'form-status';
-            status.setAttribute('role', 'status');
-            form.insertAdjacentElement('afterend', status);
 
-            form.addEventListener('submit', async (event) => {
+            if (payload.website) {
+                status.className = 'form-status success';
+                status.textContent =
+                    'Заявка отправлена. Мы скоро свяжемся с вами.';
+                return;
+            }
+
+            if (digits.length < 10 || digits.length > 15) {
+                status.className = 'form-status error';
+                status.textContent = 'Проверьте номер телефона.';
+                return;
+            }
+
+            if (Date.now() - Number(payload.formStartedAt) < 2500) {
+                status.className = 'form-status error';
+                status.textContent =
+                    'Подождите пару секунд и отправьте заявку ещё раз.';
+                return;
+            }
+
+            status.textContent = 'Отправляем заявку…';
+            if (submitButton) submitButton.disabled = true;
+
+            try {
+                await fetch(googleSheetsEndpoint, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=UTF-8'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                status.className = 'form-status success';
+                status.textContent =
+                    'Заявка отправлена. Мы скоро свяжемся с вами.';
+                form.reset();
+            } catch (error) {
+                status.className = 'form-status error';
+                status.textContent =
+                    'Не удалось отправить заявку. Позвоните нам или напишите в Telegram.';
+            } finally {
+                if (submitButton) submitButton.disabled = false;
+            }
+        });
+    });
+
+    const burgerBtn = document.getElementById('burgerBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const closeMobileMenu = document.getElementById('closeMobileMenu');
+    const mobileMenuLinks = mobileMenu
+        ? mobileMenu.querySelectorAll('a:not(.close-btn)')
+        : [];
+
+    function toggleMobileMenu() {
+        if (!mobileMenu) return;
+        mobileMenu.classList.toggle('active');
+    }
+
+    function closeMobileMenuPanel() {
+        if (!mobileMenu) return;
+        mobileMenu.classList.remove('active');
+    }
+
+    if (burgerBtn) {
+        burgerBtn.addEventListener('click', toggleMobileMenu);
+    }
+
+    if (closeMobileMenu) {
+        closeMobileMenu.addEventListener('click', (event) => {
+            event.preventDefault();
+            closeMobileMenuPanel();
+        });
+    }
+
+    mobileMenuLinks.forEach(link => {
+        link.addEventListener('click', closeMobileMenuPanel);
+    });
+
+    const brandLinks = document.querySelectorAll('.brand-menu a[data-brand]');
+    const deviceBrandSelect = document.getElementById('deviceBrandSelect');
+    const orderFormSection = document.getElementById('order-form');
+
+    brandLinks.forEach(link => {
+        link.addEventListener('click', (event) => {
+            event.preventDefault();
+
+            if (deviceBrandSelect) {
+                deviceBrandSelect.value = link.dataset.brand || 'not_selected';
+            }
+
+            if (orderFormSection) {
+                orderFormSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    const navMenu = document.getElementById('navMenu');
+    const navLinks = navMenu ? navMenu.querySelectorAll('a') : [];
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (event) => {
+            if (link.id === 'footerContactsLink') {
                 event.preventDefault();
-
-                const submitButton = form.querySelector('button[type="submit"]');
-                const formData = new FormData(form);
-                const formName = form.getAttribute('name');
-                const payload = {
-                    name: formData.get('client_name') || '',
-                    phone: formData.get('client_phone') || formData.get('user_phone') || '',
-                    deviceType: formData.get('device_brand') || (formName === 'buyout-form' ? 'Скупка техники' : 'Не указано'),
-                    deviceModel: formData.get('device_model') || '',
-                    issue: formData.get('problem_description') || (formName === 'buyout-form' ? 'Заявка на оценку устройства' : 'Быстрая консультация')
-                };
-
-                status.className = 'form-status';
-                status.textContent = 'Отправляем заявку…';
-                if (submitButton) submitButton.disabled = true;
-
-                try {
-                    await fetch(googleSheetsEndpoint, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    status.className = 'form-status success';
-                    status.textContent = 'Заявка отправлена. Мы скоро свяжемся с вами.';
-                    form.reset();
-                } catch (error) {
-                    status.className = 'form-status error';
-                    status.textContent = 'Не удалось отправить заявку. Позвоните нам или напишите в Telegram.';
-                } finally {
-                    if (submitButton) submitButton.disabled = false;
-                }
-            });
+                document.getElementById('contactsModal').classList.add('open');
+            }
         });
+    });
 
-        const burgerBtn = document.getElementById('burgerBtn');
-        const mobileMenu = document.getElementById('mobileMenu');
-        const closeMobileMenu = document.getElementById('closeMobileMenu');
-        const mobileMenuLinks = mobileMenu ? mobileMenu.querySelectorAll('a:not(.close-btn)') : [];
+    const contactsModal = document.getElementById('contactsModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const mobileContactsLink = document.getElementById('mobileContactsLink');
+    const footerContactsLink2 =
+        document.getElementById('footerContactsLink2');
 
-        function toggleMobileMenu() {
-            if (!mobileMenu) return;
-            mobileMenu.classList.toggle('active');
-        }
+    function openModal() {
+        contactsModal.classList.add('open');
+    }
 
-        function closeMobileMenuPanel() {
-            if (!mobileMenu) return;
-            mobileMenu.classList.remove('active');
-        }
+    function closeModal() {
+        contactsModal.classList.remove('open');
+    }
 
-        if (burgerBtn) {
-            burgerBtn.addEventListener('click', toggleMobileMenu);
-        }
-        if (closeMobileMenu) {
-            closeMobileMenu.addEventListener('click', (event) => {
-                event.preventDefault();
-                closeMobileMenuPanel();
-            });
-        }
-        mobileMenuLinks.forEach(link => {
-            link.addEventListener('click', closeMobileMenuPanel);
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', closeModal);
+    }
+
+    if (contactsModal) {
+        contactsModal.addEventListener('click', (event) => {
+            if (event.target === contactsModal) {
+                closeModal();
+            }
         });
+    }
 
-        const brandLinks = document.querySelectorAll('.brand-menu a[data-brand]');
-        const deviceBrandSelect = document.getElementById('deviceBrandSelect');
-        const orderFormSection = document.getElementById('order-form');
-
-        brandLinks.forEach(link => {
-            link.addEventListener('click', (event) => {
-                event.preventDefault();
-                if (deviceBrandSelect) {
-                    deviceBrandSelect.value = link.dataset.brand || 'not_selected';
-                }
-                if (orderFormSection) {
-                    orderFormSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
+    if (mobileContactsLink) {
+        mobileContactsLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            openModal();
         });
+    }
 
-        const navMenu = document.getElementById('navMenu');
-        const navLinks = navMenu ? navMenu.querySelectorAll('a') : [];
-
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                if (link.id === 'footerContactsLink') {
-                    e.preventDefault();
-                    document.getElementById('contactsModal').classList.add('open');
-                }
-            });
+    if (footerContactsLink2) {
+        footerContactsLink2.addEventListener('click', (event) => {
+            event.preventDefault();
+            openModal();
         });
-
-        const contactsModal = document.getElementById('contactsModal');
-        const closeModalBtn = document.getElementById('closeModalBtn');
-        const mobileContactsLink = document.getElementById('mobileContactsLink');
-        const footerContactsLink2 = document.getElementById('footerContactsLink2');
-
-        function openModal() {
-            contactsModal.classList.add('open');
-        }
-
-        function closeModal() {
-            contactsModal.classList.remove('open');
-        }
-
-        if (closeModalBtn) {
-            closeModalBtn.addEventListener('click', closeModal);
-        }
-        if (contactsModal) {
-            contactsModal.addEventListener('click', (e) => {
-                if (e.target === contactsModal) {
-                    closeModal();
-                }
-            });
-        }
-
-        if (mobileContactsLink) {
-            mobileContactsLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                openModal();
-            });
-        }
-        if (footerContactsLink2) {
-            footerContactsLink2.addEventListener('click', (e) => {
-                e.preventDefault();
-                openModal();
-            });
-        }
-
-    </script>
+    }
+</script>
 </body>
 </html>
